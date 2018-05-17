@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.zc.dem.syndata.medicalfrequency.repository.MedicalFrequencyDao">
+
+	<resultMap id="BaseResultMap"
+		type="com.zc.dem.syndata.medicalfrequency.entity.MedicalFrequency">
+		<id column="ID_" property="id" jdbcType="BIGINT" />
+		<result column="CODE_" property="code" jdbcType="VARCHAR" />
+		<result column="NAME_" property="name" jdbcType="VARCHAR" />
+		<result column="INTERVAL_" property="interval" jdbcType="INTEGER" />
+		<result column="TIME_OF_DAY_" property="timeOfDay" jdbcType="INTEGER" />
+		<result column="START_TIME_" property="startTime" jdbcType="VARCHAR" />
+		<result column="END_TIME_" property="endTime" jdbcType="VARCHAR" />
+		<result column="RESERVE1_" property="reserve1" jdbcType="VARCHAR" />
+		<result column="RESERVE2_" property="reserve2" jdbcType="VARCHAR" />
+		<result column="RESERVE3_" property="reserve3" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+	</resultMap>
+
+
+	<sql id="getAllSql">
+		select * from PIVAS_MEDFREQUENCY_SYN b
+	</sql>
+
+	<select id="queryAll" resultMap="BaseResultMap">
+		<include refid="common.jqueryPageHead" />
+		<include refid="getAllSql" />
+		<include refid="common.jqueryPageBottom" />
+	</select>
+
+	<delete id="deleteAll">
+		delete from PIVAS_MEDFREQUENCY_SYN
+	</delete>
+
+	<update id="synData"
+		parameterType="com.zc.dem.syndata.medicalfrequency.entity.MedicalFrequency">
+
+		merge into PIVAS_MEDICAMENTS_FREQUENCY t1
+		using ( select
+		#{code} as CODE_
+		from dual ) t2
+		ON
+		(
+		t1.CODE_ = t2.CODE_
+		)
+		WHEN MATCHED THEN
+		UPDATE SET
+		t1.NAME_ = #{name},
+		t1.action = 1
+		where t1.CODE_ = #{code}
+		WHEN NOT MATCHED THEN
+		INSERT
+		(
+		t1.CODE_,
+		t1.NAME_,
+		t1.action
+		)
+		VALUES
+		(
+		#{code},
+		#{name},
+		0
+		)
+	</update>
+</mapper>

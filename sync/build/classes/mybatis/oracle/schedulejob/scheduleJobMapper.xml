@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.schedulejob.repository.ScheduleJobDao">
+
+	<resultMap type="com.zc.dem.schedulejob.entity.ScheduleJob" id="jobMap">
+		<id property="jobId" column="taskID" jdbcType="BIGINT"/>
+		<result property="jobName" column="taskName" jdbcType="VARCHAR"/>
+		<result property="jobType" column="taskType" jdbcType="INTEGER"/>
+		<result property="execMode" column="taskExcMode" jdbcType="INTEGER"/>
+		<result property="taskPriority" column="taskPriority" jdbcType="INTEGER"/>
+		<result property="runInterval" column="inteval" jdbcType="INTEGER"/>
+		<result property="retryTime" column="retryTimes" jdbcType="INTEGER"/>
+		<result property="retryInterval" column="retryInteval" jdbcType="INTEGER"/>
+		<result property="startTime" column="taskExcTime" jdbcType="TIMESTAMP"/>
+		<result property="createTime" column="taskCreateTime" jdbcType="TIMESTAMP"/>
+		<result property="updateTime" column="taskUpdateTime" jdbcType="TIMESTAMP"/>
+		<result property="action" column="taskContentType" jdbcType="INTEGER"/>
+		<result property="jobEnable" column="taskStatus" jdbcType="INTEGER"/>
+		<result property="remark" column="taskRemark" jdbcType="VARCHAR"/>
+		<result property="beanClass" column="beanClass" jdbcType="VARCHAR"/>
+	</resultMap>
+
+  	<!-- 根据告警类型查询告记录数 -->
+	<select id="getAllTask" resultMap="jobMap">
+		select
+		a.task_id 				taskID,
+		a.task_name 			taskName,
+		a.task_type 			taskType,
+		a.task_execute_mode 	taskExcMode,
+		a.task_taskpriority 	taskPriority,
+		a.task_inteval 			inteval,
+		a.task_retrytimes       retryTimes,
+		a.task_retryinteval     retryInteval,
+		a.task_execute_time 	taskExcTime,
+		a.task_create_time 		taskCreateTime,
+		a.task_update_time 		taskUpdateTime,
+		a.task_content_type 	taskContentType,
+		a.task_status 			taskStatus,
+		a.task_remark 			taskRemark,
+		a.task_beanclass		beanClass
+		from PIVAS_TASK a
+		where 1 = 1
+  </select>
+  
+  	<!-- 插入一条任务记录-->
+	<insert id="insertOneTask" parameterType="com.zc.dem.schedulejob.entity.ScheduleJob">
+		insert into pivas_task(
+		task_name,
+		task_type,
+		task_execute_mode,
+		task_taskpriority,
+		task_inteval,
+		task_retrytimes,
+		task_retryinteval,
+		task_execute_time,
+		task_create_time,
+		task_update_time,
+		task_content_type,
+		task_status,
+		task_remark,
+		task_beanclass)
+		values(
+		#{jobName,jdbcType=VARCHAR},
+		#{jobType,jdbcType=INTEGER},
+		#{execMode,jdbcType=INTEGER},
+		#{taskPriority,jdbcType=INTEGER},
+		#{runInterval,jdbcType=INTEGER},
+		#{retryTime,jdbcType=INTEGER},
+		#{retryInterval,jdbcType=INTEGER},
+		#{startTime,jdbcType=TIMESTAMP},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{action,jdbcType=INTEGER},
+		#{jobEnable,jdbcType=INTEGER},
+		#{remark,jdbcType=VARCHAR},
+		#{beanClass,jdbcType=VARCHAR}
+		)
+  </insert>
+  
+  <!-- 插入一条任务结果记录-->
+	<insert id="insertRecord" parameterType="com.zc.dem.schedulejob.entity.ScheduleResult">
+		insert into pivas_task_result(
+		task_id,
+		task_name,
+		task_type,
+		task_result,
+		task_exestart_time,
+		task_exestop_time,
+		task_content_type)
+		values(
+		#{scheduleResult.taskID,jdbcType=BIGINT},
+		#{scheduleResult.taskName,jdbcType=VARCHAR},
+		#{scheduleResult.taskType,jdbcType=INTEGER},
+		#{scheduleResult.taskResult,jdbcType=INTEGER},
+		#{scheduleResult.taskExecStartTime,jdbcType=TIMESTAMP},
+		#{scheduleResult.taskExecStopTime,jdbcType=TIMESTAMP},
+		#{scheduleResult.taskContent,jdbcType=INTEGER})
+  </insert>
+  
+  	<!-- 删除一条任务记录 -->
+	<delete id="deleteOneTask" parameterType="com.zc.dem.schedulejob.entity.ScheduleJob">
+		delete from PIVAS_TASK a
+		where a.task_id = #{jobId,jdbcType=INTEGER} and a.task_name = #{jobName,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 更新一条任务记录 -->
+	<update id="updateOneTask" parameterType="com.zc.dem.schedulejob.entity.ScheduleJob">
+		update PIVAS_TASK a set
+		a.task_type 			= #{schedulejob.jobType,jdbcType=INTEGER},
+		a.task_execute_mode 	= #{schedulejob.execMode,jdbcType=INTEGER},
+		a.task_taskpriority 	= #{schedulejob.taskPriority,jdbcType=INTEGER},
+		a.task_inteval 			= #{schedulejob.runInterval,jdbcType=INTEGER},
+		a.task_retrytimes       = #{schedulejob.retryTime,jdbcType=INTEGER},
+		a.task_retryinteval     = #{schedulejob.retryInterval,jdbcType=INTEGER},
+		a.task_execute_time 	= #{schedulejob.startTime,jdbcType=TIMESTAMP},
+		a.task_update_time 		= #{schedulejob.updateTime,jdbcType=TIMESTAMP},
+		a.task_content_type 	= #{schedulejob.action,jdbcType=INTEGER},
+		a.task_status 			= #{schedulejob.jobEnable,jdbcType=INTEGER},
+		a.task_remark 			= #{schedulejob.remark,jdbcType=VARCHAR},
+		a.task_beanclass		= #{schedulejob.beanClass,jdbcType=VARCHAR}
+		where a.task_id = #{schedulejob.jobId,jdbcType=BIGINT} and a.task_name = #{schedulejob.jobName,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据告警类型查询告记录数 -->
+	<select id="selectOneTask" resultMap="jobMap">
+		select
+		a.task_id 				taskID,
+		a.task_name 			taskName,
+		a.task_type 			taskType,
+		a.task_execute_mode 	taskExcMode,
+		a.task_taskpriority 	taskPriority,
+		a.task_inteval 			inteval,
+		a.task_retrytimes       retryTimes,
+		a.task_retryinteval     retryInteval,
+		a.task_execute_time 	taskExcTime,
+		a.task_create_time 		taskCreateTime,
+		a.task_update_time 		taskUpdateTime,
+		a.task_content_type 	taskContentType,
+		a.task_status 			taskStatus,
+		a.task_remark 			taskRemark,
+		a.task_beanclass		beanClass
+		from PIVAS_TASK a
+		where 1 = 1
+		<if test="schedulejob.jobName != null">
+			and a.task_name = #{schedulejob.jobName,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="schedulejob.jobId != null">
+			and a.task_id = #{schedulejob.jobId,jdbcType=BIGINT}
+		</if>
+  </select>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.synhis.dao.DrugWayByHisDAO">
+	<resultMap id="DrugWayMap"
+		type="com.zc.dem.syndata.drugway.bean.DrugWayBean">
+		<id column="gid" property="gid" jdbcType="VARCHAR" />
+		<result column="drugwayid" property="id" jdbcType="VARCHAR" />
+		<result column="drugwaycode" property="code" jdbcType="VARCHAR" />
+		<result column="drugwayname" property="name" jdbcType="INTEGER" />
+		<result column="reserve0" property="reserve0" jdbcType="VARCHAR" />
+		<result column="reserve1" property="reserve1" jdbcType="VARCHAR" />
+		<result column="reserve2" property="reserve2" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="qryDrugWayList" resultType="com.zc.dem.syndata.drugway.bean.DrugWayBean">
+		select * from V_PIVAS_USAGE_NEW
+	</select>
+</mapper>

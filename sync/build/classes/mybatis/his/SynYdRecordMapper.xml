@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.synhis.dao.SynYdRecordByHisDAO">
+	
+	<select id="qryYdRecordList"
+	resultType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean">
+	SELECT RECIPEID,
+	GROUPNO,DRUGLISTID,replace(replace( replace(DRUGFREQ,')', ''),'(', ''),'.','')  as DRUGFREQ,DrugCode,durgName as DrugName,
+	QUANTITY,QUANTITYUNIT,SCHEDULE,OCCDT,CHARGEDT,OCCDT as INFUSIONDATE,LABELNO,BEGINDT,ENDDT,
+	druged_date as drugedDate,substr(bedNo,5) as bedno ,patName, ydstatus as state
+	FROM V_PIVAS_YD_NEW
+	<![CDATA[ where occdt >= to_date(to_char(sysdate,]]>
+	'yyyy-MM-DD') || ' 00:00:00','yyyy-MM-DD hh24:mi:ss') and druged_date is not null
+	
+	and durgName not like '%胰岛素%'
+	
+	<if test="map != null">
+		<if test="map.order_group_no != null">
+		<![CDATA[ and	groupno = #{map.order_group_no,jdbcType=VARCHAR} and ydstatus <> 0]]>
+		</if>
+		
+		<if test="map.occdt != null">
+		and	OCCDT = to_date(#{map.occdt,jdbcType=VARCHAR} , 'yyyy-MM-DD hh24:mi:ss')
+		</if>
+	</if>
+	
+</select>
+
+
+<select id="qryYdStateList"
+	resultType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean">
+	SELECT RECIPEID, GROUPNO,DRUGLISTID, ydstatus as state FROM V_PIVAS_YD_TF_NEW
+	<![CDATA[ where occdt >= to_date(to_char(sysdate,]]>
+	'yyyy-MM-DD') || ' 00:00:00','yyyy-MM-DD hh24:mi:ss') and druged_date is not null
+	
+	<if test="map != null">
+		<if test="map.order_group_no != null">
+		<![CDATA[ and	groupno = #{map.order_group_no,jdbcType=VARCHAR} and ydstatus <> 0]]>
+		</if>
+		
+		<if test="map.occdt != null">
+		and	OCCDT = to_date(#{map.occdt,jdbcType=VARCHAR} , 'yyyy-MM-DD hh24:mi:ss')
+		</if>
+	</if>
+	
+</select>
+	
+</mapper>

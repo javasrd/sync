@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.syndata.patient.dao.PatientDAO">
+	<resultMap id="PatientMap"
+		type="com.zc.dem.syndata.patient.bean.PatientBean">
+		<id column="gid" property="gid" jdbcType="VARCHAR" />
+		<result column="inhospno" property="inhospNo" jdbcType="VARCHAR" />
+		<result column="patname" property="patName" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="INTEGER" />
+		<result column="wardcode" property="wardCode" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="bedno" property="bedNo" jdbcType="VARCHAR" />
+		<result column="reserve0" property="reserve0" jdbcType="VARCHAR" />
+		<result column="reserve1" property="reserve1" jdbcType="VARCHAR" />
+		<result column="reserve2" property="reserve2" jdbcType="VARCHAR" />
+		<result column="case_id" property="case_ID" jdbcType="VARCHAR" />
+		<result column="birthday" property="birthDay" jdbcType="TIMESTAMP" />
+		<result column="age" property="age" jdbcType="VARCHAR" />
+		<result column="ageunit" property="ageUnit" jdbcType="INTEGER" />
+		<result column="avdp" property="avdp" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+		<result column="hosOutTime" property="hosOutTime" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="getPatientSynSql">
+		select * from PIVAS_PATIENT_syn b
+	</sql>
+
+	<sql id="getPatientSql">
+		select * from PIVAS_PATIENT b
+		<where>
+			1=1
+			<if test="patient.inhospNo != null and '' neq patient.inhospNo">
+				and inhospNo = #{patient.inhospNo}
+			</if>
+
+		</where>
+	</sql>
+
+	<select id="getPatientSynList" resultMap="PatientMap">
+		<include refid="getPatientSynSql" />
+	</select>
+
+	<delete id="delAllSynPatients">
+		delete from PIVAS_PATIENT_syn
+	</delete>
+
+	<update id="synData" parameterType="com.zc.dem.syndata.patient.bean.PatientBean">
+
+		merge into PIVAS_PATIENT t1
+		using ( select
+		#{inhospNo} as inhospno
+		from dual ) t2
+		ON
+		(
+		t1.inhospno =
+		t2.inhospno
+		)
+		WHEN MATCHED THEN UPDATE SET
+
+		t1.patname = #{patName},
+		t1.sex = #{sex},
+		t1.wardcode = #{wardCode},
+<if test="state != null and '' neq state">
+		t1.state = #{state},
+</if>
+<if test="bedNo != null and '' neq bedNo">
+		t1.bedno = #{bedNo},
+</if>
+		<if test="case_ID != null and '' neq case_ID">
+		t1.case_id = #{case_ID},
+		</if>
+		
+		<if test="birthDay != null and '' neq birthDay">
+				t1.birthday = #{birthDay},
+		</if>
+		
+		<if test="hosOutTime != null and '' neq hosOutTime">
+				t1.hosOutTime = #{hosOutTime},
+		</if>
+		
+		t1.age = #{age},
+		t1.ageunit = #{ageUnit},
+		<if test="avdp != null and '' neq avdp">
+		t1.avdp = #{avdp},
+		</if>
+		t1.action =
+		1
+		where t1.inhospno = #{inhospNo}
+		WHEN NOT MATCHED THEN
+		INSERT
+		(
+		t1.inhospno,
+		t1.patname,
+		t1.sex,
+		t1.wardcode,
+		
+		<if test="state != null and '' neq state">
+		t1.state,
+		</if>
+<if test="bedNo != null and '' neq bedNo">
+		t1.bedno,
+</if>
+		<if test="case_ID != null and '' neq case_ID">
+		t1.case_id,
+		</if>
+		<if test="birthDay != null and '' neq birthDay">
+				t1.birthday,
+		</if>
+		
+		<if test="hosOutTime != null and '' neq hosOutTime">
+				t1.hosOutTime,
+		</if>
+		t1.age,
+		t1.ageunit,
+		
+		<if test="avdp != null and '' neq avdp">
+			t1.avdp,
+		</if>
+		t1.action
+		)
+		VALUES
+		(
+		#{inhospNo},
+		#{patName},
+		#{sex},
+		#{wardCode},
+		
+		<if test="state != null and '' neq state">
+		#{state},
+		</if>
+
+<if test="bedNo != null and '' neq bedNo">
+		#{bedNo},
+		</if>
+		<if test="case_ID != null and '' neq case_ID">
+		#{case_ID},
+		</if>
+		
+		<if test="birthDay != null and '' neq birthDay">
+				#{birthDay},
+		</if>
+		
+		<if test="hosOutTime != null and '' neq hosOutTime">
+				#{hosOutTime},
+		</if>
+		#{age},
+		#{ageUnit},
+		
+		
+		<if test="avdp != null and '' neq avdp">
+			#{avdp},
+		</if>
+		0
+		)
+	</update>
+</mapper>

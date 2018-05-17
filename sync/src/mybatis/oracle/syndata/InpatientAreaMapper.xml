@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.syndata.inpatientarea.dao.InpatientAreaDAO">
+	<resultMap id="InpatientAreaMap"
+		type="com.zc.dem.syndata.inpatientarea.bean.InpatientAreaBean">
+		<id column="gid" property="gid" jdbcType="VARCHAR" />
+		<result column="deptcode" property="deptCode" jdbcType="VARCHAR" />
+		<result column="deptname" property="deptName" jdbcType="VARCHAR" />
+		<result column="reserve0" property="reserve0" jdbcType="VARCHAR" />
+		<result column="reserve1" property="reserve1" jdbcType="VARCHAR" />
+		<result column="reserve2" property="reserve2" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<sql id="getInpatientAreaSql">
+		SELECT * FROM PIVAS_INPATAREA_SYN
+	</sql>
+	
+	<select id="queryAll" resultType="com.zc.dem.syndata.inpatientarea.bean.InpatientAreaBean">
+		<include refid="common.jqueryPageHead" />
+		<include refid="getInpatientAreaSql" />
+		<include refid="common.jqueryPageBottom" />
+	</select>
+	
+	<select id="queryInPatientAreaList" resultType="com.zc.dem.syndata.inpatientarea.bean.InpatientAreaBean">
+	SELECT * FROM PIVAS_INPATIENTAREA
+	</select>
+
+	<delete id="deleteAll">
+		delete from PIVAS_INPATAREA_SYN
+	</delete>
+
+	<update id="synData" parameterType="com.zc.dem.syndata.inpatientarea.bean.InpatientAreaBean">
+
+		merge into
+		PIVAS_INPATIENTAREA t1
+		using ( select
+		#{deptCode} as deptcode
+		from dual )
+		t2
+		ON
+		(
+		t1.deptcode = t2.deptcode
+		)
+		WHEN MATCHED THEN
+		UPDATE SET
+		t1.deptname
+		= #{deptName},
+		t1.action = 1
+		where t1.deptcode = #{deptCode}
+		WHEN
+		NOT
+		MATCHED THEN
+		INSERT
+		(
+		t1.deptcode,
+		t1.deptName,
+		t1.action
+		)
+		VALUES
+		(
+		#{deptCode},
+		#{deptName},
+		0
+		)
+	</update>
+</mapper>						

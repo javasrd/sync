@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.syndata.medicaments.repository.MedicamentsDao">
+	<resultMap id="BaseResultMap"
+		type="com.zc.dem.syndata.medicaments.entity.Medicaments">
+		<id column="MEDICAMENTS_ID" property="medicamentsId" jdbcType="BIGINT" />
+		<result column="MEDICAMENTS_NAME" property="medicamentsName"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_CODE" property="medicamentsCode"
+			jdbcType="VARCHAR" />
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_SUCHAMA" property="medicamentsSuchama"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_SPECIFICATIONS" property="medicamentsSpecifications"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_VOLUME" property="medicamentsVolume"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_VOLUME_UNIT" property="medicamentsVolumeUnit"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_DOSAGE" property="medicamentsDosage"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_DOSAGE_UNIT" property="medicamentsDosageUnit"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_PACKING_UNIT" property="medicamentsPackingUnit"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_TEST_FLAG" property="medicamentsTestFlag"
+			jdbcType="INTEGER" />
+		<result column="MEDICAMENTS_PLACE" property="medicamentsPlace"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_PLACE_CODE" property="medicamentsPlaceCode"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_PRICE" property="medicamentsPrice"
+			jdbcType="VARCHAR" />
+		<result column="MEDICAMENTS_MENSTRUUM" property="medicamentsMenstruum"
+			jdbcType="INTEGER" />
+		<result column="MEDICAMENTS_ISACTIVE" property="medicamentsIsactive"
+			jdbcType="INTEGER" />
+		<result column="MEDICAMENTS_ISMAINDRUG" property="medicamentsIsmaindrug"
+			jdbcType="INTEGER" />
+		<result column="MEDICAMENTS_DANGER" property="medicamentsDanger"
+			jdbcType="INTEGER" />
+		<result column="MEDICAMENTS_SHELF_NO" property="shelfNo"
+			jdbcType="VARCHAR" />
+
+		<result column="solvent_flag" property="solvent_flag"  jdbcType="VARCHAR" />
+		<result column="main_drug_flag" property="main_drug_flag"  jdbcType="VARCHAR" />
+		<result column="effective_date" property="effective_date"  jdbcType="VARCHAR" />
+		<result column="difficulty_degree" property="difficulty_degree"  jdbcType="VARCHAR" />
+				
+		<result column="phyfunctiy" property="phyFunctiy"  jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="Base_Where_Sql">
+		from pivas_medicaments
+		<where>
+			1=1
+			<if test="condition != null">
+
+				<if
+					test="condition.medicamentsCode != null and '' neq condition.medicamentsCode">
+					AND medicaments_code like
+					'%'||#{condition.medicamentsCode,jdbcType=VARCHAR}||'%'
+				</if>
+
+			</if>
+		</where>
+	</sql>
+
+	<update id="synData"
+		parameterType="com.zc.dem.syndata.medicaments.entity.Medicaments">
+
+		merge into PIVAS_MEDICAMENTS t1
+		using (
+		select #{medicamentsCode,jdbcType=VARCHAR} as medicaments_code from dual )
+		t2
+		ON
+		(
+		t1.MEDICAMENTS_CODE = t2.MEDICAMENTS_CODE
+		)
+		WHEN MATCHED THEN UPDATE SET
+		<if test="medicamentsName != null">
+		t1.MEDICAMENTS_NAME = #{medicamentsName,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsSuchama != null">
+		t1.MEDICAMENTS_SUCHAMA = #{medicamentsSuchama,jdbcType=VARCHAR},
+		</if>
+			<if test="medicamentsSpecifications != null">
+		t1.MEDICAMENTS_SPECIFICATIONS = #{medicamentsSpecifications,jdbcType=VARCHAR},
+		</if>
+			<if test="medicamentsVolume != null">
+		t1.MEDICAMENTS_VOLUME = #{medicamentsVolume,jdbcType=VARCHAR},
+		</if>
+			<if test="medicamentsVolumeUnit != null">
+		t1.MEDICAMENTS_VOLUME_UNIT = #{medicamentsVolumeUnit,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsDosage != null">
+		t1.MEDICAMENTS_DOSAGE = #{medicamentsDosage,jdbcType=VARCHAR},
+		</if>
+			<if test="medicamentsDosageUnit != null">
+		t1.MEDICAMENTS_DOSAGE_UNIT = #{medicamentsDosageUnit,jdbcType=VARCHAR},
+		</if>
+			<if test="medicamentsPackingUnit != null">
+		t1.MEDICAMENTS_PACKING_UNIT = #{medicamentsPackingUnit,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsTestFlag != null">
+		t1.MEDICAMENTS_TEST_FLAG = #{medicamentsTestFlag,jdbcType=INTEGER},
+		</if>
+		<if test="medicamentsPlace != null">
+		t1.MEDICAMENTS_PLACE = #{medicamentsPlace,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsPlaceCode != null">
+		t1.MEDICAMENTS_PLACE_CODE = #{medicamentsPlaceCode,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsPrice != null">
+		t1.MEDICAMENTS_PRICE = #{medicamentsPrice,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsDanger != null">
+		t1.MEDICAMENTS_DANGER = #{medicamentsDanger,jdbcType=INTEGER},
+		</if>
+		<if test="shelfNo != null">
+		t1.MEDICAMENTS_SHELF_NO = #{shelfNo,jdbcType=VARCHAR},
+		</if>
+		<if test="categoryId != null">
+			t1.CATEGORY_ID = #{categoryId,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="medicamentsMenstruum != null">
+			t1.MEDICAMENTS_MENSTRUUM = #{medicamentsMenstruum,jdbcType=VARCHAR}, 
+		</if>
+		
+		<if test="medicamentsIsmaindrug != null">
+			t1.MEDICAMENTS_ISMAINDRUG = #{medicamentsIsmaindrug,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="effective_date != null">
+			t1.effective_date = #{effective_date,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="difficulty_degree != null">
+			t1.difficulty_degree = #{difficulty_degree,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="phyFunctiy != null">
+			t1.phyfunctiy = #{phyFunctiy,jdbcType=VARCHAR},
+		</if>
+		
+		t1.ACTION = 1
+		where MEDICAMENTS_CODE = #{medicamentsCode,jdbcType=VARCHAR}
+		WHEN NOT MATCHED THEN
+		INSERT
+		(
+		<if test="medicamentsId != null">
+		t1.medicaments_id,
+		</if>
+			<if test="medicamentsName != null">
+		t1.medicaments_name,
+		</if>
+		<if test="medicamentsCode != null">
+		t1.medicaments_code,
+		</if>
+		<if test="medicamentsSuchama != null">
+		t1.medicaments_suchama,
+		</if>
+		t1.medicaments_specifications,
+		<if test="medicamentsVolume != null">
+		t1.medicaments_volume,
+		</if>
+		<if test="medicamentsVolumeUnit != null">
+		t1.medicaments_volume_unit,
+		</if>
+		t1.medicaments_dosage, medicaments_dosage_unit,
+		t1.medicaments_packing_unit, medicaments_test_flag,
+		t1.medicaments_place,medicaments_place_code,
+		t1.medicaments_price,
+		t1.medicaments_isactive,
+			<if test="difficulty_degree != null">
+		t1.medicaments_danger,
+		</if>
+			<if test="shelfNo != null">
+		t1.medicaments_shelf_no,
+		</if>
+		<if test="categoryId != null">
+			t1.CATEGORY_ID,
+		</if>
+		
+		<if test="medicamentsMenstruum != null">
+			t1.MEDICAMENTS_MENSTRUUM, 
+		</if>
+		
+		<if test="medicamentsIsmaindrug != null">
+			t1.MEDICAMENTS_ISMAINDRUG,
+		</if>
+		
+		<if test="effective_date != null">
+			t1.effective_date,
+		</if>
+		
+		<if test="difficulty_degree != null">
+			t1.difficulty_degree,
+		</if>
+		
+		<if test="phyFunctiy != null">
+			t1.phyfunctiy,
+		</if>
+
+		t1.action
+		)
+		VALUES
+		(
+			<if test="medicamentsId != null">
+		#{medicamentsId,jdbcType=BIGINT},
+			</if>
+			<if test="medicamentsName != null">
+		#{medicamentsName,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsCode != null">
+		#{medicamentsCode,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsSuchama != null">
+		#{medicamentsSuchama,jdbcType=VARCHAR},
+		</if>
+		#{medicamentsSpecifications,jdbcType=VARCHAR},
+		<if test="medicamentsVolume != null">
+		#{medicamentsVolume,jdbcType=VARCHAR},
+		</if>
+		<if test="medicamentsVolumeUnit != null">
+		#{medicamentsVolumeUnit,jdbcType=VARCHAR},
+		</if>
+		#{medicamentsDosage,jdbcType=VARCHAR},
+		#{medicamentsDosageUnit,jdbcType=VARCHAR},
+		#{medicamentsPackingUnit,jdbcType=VARCHAR},
+		#{medicamentsTestFlag,jdbcType=INTEGER},
+		#{medicamentsPlace,jdbcType=VARCHAR},
+		#{medicamentsPlaceCode,jdbcType=VARCHAR},
+		#{medicamentsPrice,jdbcType=VARCHAR},
+		#{medicamentsIsactive,jdbcType=INTEGER},
+			<if test="difficulty_degree != null">
+		#{medicamentsDanger,jdbcType=INTEGER},
+		</if>
+			<if test="shelfNo != null">
+		#{shelfNo,jdbcType=VARCHAR},
+		</if>
+
+		<if test="categoryId != null">
+			#{categoryId,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="medicamentsMenstruum != null">
+			#{medicamentsMenstruum,jdbcType=VARCHAR}, 
+		</if>
+		
+		<if test="medicamentsIsmaindrug != null">
+			#{medicamentsIsmaindrug,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="effective_date != null">
+			#{effective_date,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="difficulty_degree != null">
+			#{difficulty_degree,jdbcType=VARCHAR},
+		</if>
+		
+		<if test="phyFunctiy != null">
+			#{phyFunctiy,jdbcType=VARCHAR},
+		</if>
+		0
+		)
+	</update>
+
+	<select id="getTotalCount" resultType="int">
+		select
+		count(1)
+		<include refid="Base_Where_Sql" />
+	</select>
+
+	<sql id="getAllSql">
+		select * from PIVAS_MEDICAMENTS_SYN b
+	</sql>
+
+	<select id="queryAll" resultMap="BaseResultMap">
+		<include refid="getAllSql" />
+	</select>
+
+	<delete id="deleteAll">
+		delete from PIVAS_MEDICAMENTS_SYN
+	</delete>
+</mapper>

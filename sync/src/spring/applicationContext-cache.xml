@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+	http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"
+	default-lazy-init="true">
+	
+	<!-- 缓存 -->
+	<cache:annotation-driven />
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehCacheManager"/>
+	<!-- EhCache library setup -->
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:config-location="classpath:cache/ehcache.xml"/>
+	
+	
+	
+	<cache:advice id="patientServiceAdvice" cache-manager="cacheManager">
+		<cache:caching>
+			<cache:cache-evict method="delAllSynPatients" all-entries="true" cache="shiro.authorizationCache"/>
+		</cache:caching>
+	</cache:advice>
+	
+	<cache:advice id="inpatientAreaServiceAdvice" cache-manager="cacheManager">
+		<cache:caching>
+			<cache:cache-evict method="delAllSynInpatientAreas" all-entries="true" cache="shiro.authorizationCache"/>
+		</cache:caching>
+	</cache:advice>
+	
+	<cache:advice id="drugWayServiceAdvice" cache-manager="cacheManager">
+		<cache:caching>
+			<cache:cache-evict method="delAllSynDrugWays" all-entries="true" cache="shiro.authorizationCache"/>
+		</cache:caching>
+	</cache:advice>
+	
+	<cache:advice id="medicalFrequencyServiceAdvice" cache-manager="cacheManager">
+		<cache:caching>
+			<cache:cache-evict method="deleteAll" all-entries="true" cache="shiro.authorizationCache"/>
+		</cache:caching>
+	</cache:advice>
+	
+	<cache:advice id="medicamentsServiceAdvice" cache-manager="cacheManager">
+		<cache:caching>
+			<cache:cache-evict method="deleteAll" all-entries="true" cache="shiro.authorizationCache"/>
+		</cache:caching>
+	</cache:advice>
+	
+	<cache:advice id="taskResultServiceAdvice" cache-manager="cacheManager">
+		<cache:caching>
+			<cache:cache-evict method="deleteAll" all-entries="true" cache="shiro.authorizationCache"/>
+		</cache:caching>
+	</cache:advice>
+	
+	<cache:advice id="synYzServiceAdvice" cache-manager="cacheManager">
+		<cache:caching>
+			<cache:cache-evict method="deleteAll" all-entries="true" cache="shiro.authorizationCache"/>
+		</cache:caching>
+	</cache:advice>
+	
+	<aop:config>
+		<aop:advisor advice-ref="synYzServiceAdvice" pointcut="execution(* com.zc.dem.syndata.yz.service.impl.SynYzServiceImpl.*(..))" />
+	    <aop:advisor advice-ref="taskResultServiceAdvice" pointcut="execution(* com.zc.dem.syndata.taskresult.service.impl.TaskResultServiceImpl.*(..))" />
+		<aop:advisor advice-ref="medicamentsServiceAdvice" pointcut="execution(* com.zc.dem.syndata.medicaments.service.impl.MedicamentsServiceImpl.*(..))" />
+		<aop:advisor advice-ref="medicalFrequencyServiceAdvice" pointcut="execution(* com.zc.dem.syndata.medicalfrequency.service.impl.MedicalFrequencyServiceImpl.*(..))" />
+		<aop:advisor advice-ref="drugWayServiceAdvice" pointcut="execution(* com.zc.dem.syndata.drugway.service.impl.DrugWayServiceImpl.*(..))" />
+		<aop:advisor advice-ref="inpatientAreaServiceAdvice" pointcut="execution(* com.zc.dem.syndata.inpatientarea.service.impl.InpatientAreaServiceImpl.*(..))" />
+		<aop:advisor advice-ref="patientServiceAdvice" pointcut="execution(* com.zc.dem.syndata.patient.service.impl.PatientServiceImpl.*(..))" />
+	</aop:config>
+</beans>

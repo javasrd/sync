@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.synhis.dao.PatientByHisDAO">
+	<resultMap id="PatientMap"
+		type="com.zc.dem.syndata.patient.bean.PatientBean">
+		<id column="gid" property="gid" jdbcType="VARCHAR" />
+		<result column="inhospno" property="inhospNo" jdbcType="VARCHAR" />
+		<result column="patname" property="patName" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="INTEGER" />
+		<result column="wardcode" property="wardCode" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="bedno" property="bedNo" jdbcType="VARCHAR" />
+		<result column="reserve0" property="reserve0" jdbcType="VARCHAR" />
+		<result column="reserve1" property="reserve1" jdbcType="VARCHAR" />
+		<result column="reserve2" property="reserve2" jdbcType="VARCHAR" />
+		<result column="case_id" property="case_ID" jdbcType="VARCHAR" />
+		<result column="birthday" property="birthDay" jdbcType="TIMESTAMP" />
+		<result column="age" property="age" jdbcType="VARCHAR" />
+		<result column="ageunit" property="ageUnit" jdbcType="INTEGER" />
+		<result column="avdp" property="avdp" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+		<result column="hosOutTime" property="hosOutTime" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="qryPatientList" resultMap="PatientMap">
+		select Inhosp_No as inhospno,dname as patname,case
+  when Physic_Sex_Code  is null then '1'
+  
+  	else Physic_Sex_Code end  as sex,Ward_Code as wardcode,
+		Bed_No as bedno, State,Date_Birth as birthday,Inhosp_Index_No as inhospIndexNO,Weight as avdp,
+		<![CDATA[ age,'-1' as ageunit, diagnosis from V_PIVAS_ACTPATIENT_NEW W where  (outdate is null or to_char(outdate, 'yyyy/MM/dd') = '0001/01/01' or outdate >= sysdate -1 ) and bed_no is not null]]>
+	</select>
+
+</mapper>

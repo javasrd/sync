@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.syndata.employee.dao.EmployeeInfoDAO">
+	<resultMap id="EmployeeInfoMap"
+		type="com.zc.dem.syndata.employee.bean.EmployeeInfoBean">
+		<id column="gid" property="gid" jdbcType="VARCHAR" />
+		<result column="Staff_Code" property="staff_Code" jdbcType="VARCHAR" />
+		<result column="Staff_Name" property="staff_Name" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="getEmployeeInfo">
+		SELECT * FROM PIVAS_EMPLOYEEINFO_syn
+
+	</sql>
+
+	<select id="queryAll" resultMap="EmployeeInfoMap">
+		<include refid="common.jqueryPageHead" />
+		<include refid="getEmployeeInfo" />
+		<include refid="common.jqueryPageBottom" />
+	</select>
+
+	<select id="queryInPatientAreaList" resultMap="EmployeeInfoMap">
+		SELECT * FROM PIVAS_EMPLOYEEINFO
+	</select>
+
+	<delete id="deleteAll">
+		delete from PIVAS_EMPLOYEEINFO_syn
+	</delete>
+
+	<update id="synData" parameterType="com.zc.dem.syndata.employee.bean.EmployeeInfoBean">
+
+		merge into
+		PIVAS_EMPLOYEEINFO t1
+		using ( select
+		#{staff_Code} as staff_Code
+		from dual )
+		t2
+		ON
+		(
+		t1.staff_Code = t2.staff_Code
+		)
+		WHEN MATCHED THEN
+		UPDATE SET
+		t1.staff_Name
+		= #{staff_Name},
+		t1.action = 1
+		where t1.staff_Code = #{staff_Code}
+		WHEN
+		NOT
+		MATCHED THEN
+		INSERT
+		(
+		t1.staff_Code,
+		t1.staff_Name,
+		t1.action
+		)
+		VALUES
+		(
+		#{staff_Code},
+		#{staff_Name},
+		0
+		)
+	</update>
+</mapper>						

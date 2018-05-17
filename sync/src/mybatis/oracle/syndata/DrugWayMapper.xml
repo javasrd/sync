@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.syndata.drugway.dao.DrugWayDAO">
+	<resultMap id="DrugWayMap"
+		type="com.zc.dem.syndata.drugway.bean.DrugWayBean">
+		<id column="gid" property="gid" jdbcType="VARCHAR" />
+		<result column="drugwayid" property="id" jdbcType="VARCHAR" />
+		<result column="drugwaycode" property="code" jdbcType="VARCHAR" />
+		<result column="drugwayname" property="name" jdbcType="INTEGER" />
+		<result column="reserve0" property="reserve0" jdbcType="VARCHAR" />
+		<result column="reserve1" property="reserve1" jdbcType="VARCHAR" />
+		<result column="reserve2" property="reserve2" jdbcType="VARCHAR" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="getDrugWaySql">
+		select * from pivas_drugway_syn
+	</sql>
+
+	<select id="queryAll" resultMap="DrugWayMap">
+		<include refid="common.jqueryPageHead" />
+		<include refid="getDrugWaySql" />
+		<include refid="common.jqueryPageBottom" />
+	</select>
+	
+	<delete id="deleteAll">
+		delete from pivas_drugway_syn
+	</delete>
+
+	<update id="synData" parameterType="com.zc.dem.syndata.drugway.bean.DrugWayBean">
+
+		merge into pivas_drugway t1
+		using ( select
+		#{id} as drugwayid
+		from dual ) t2
+		ON
+		(
+		t1.drugwayid =
+		t2.drugwayid
+		)
+		WHEN MATCHED THEN
+		UPDATE SET
+		t1.drugwaycode = #{code},
+		t1.drugwayname = #{name},
+		t1.action = 1
+		where t1.drugwayid = #{id}
+		WHEN
+		NOT MATCHED THEN
+		INSERT
+		(
+		t1.drugwayid,
+		t1.drugwaycode,
+		t1.drugwayname,
+		t1.action
+		)
+		VALUES
+		(
+		#{id},
+		#{code},
+		#{name},
+		0
+		)
+	</update>
+</mapper>

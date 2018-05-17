@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.syndata.excuteRecord.dao.SynYdRecordDAO">
+
+	<sql id="getAllSql">
+		SELECT * FROM PIVAS_YDRECORD_SYN order by  Occdt
+	</sql>
+
+	<select id="queryAll" resultType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean">
+		<include refid="getAllSql" />
+	</select>
+	
+	<delete id="deleteAll">
+		delete from PIVAS_YDRECORD_SYN
+	</delete>
+	
+	<update id="synData" parameterType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean">
+
+		merge into
+		PIVAS_YDRECORD t1
+		using (
+		select
+		#{recipeID} as RECIPEID,
+		#{groupNo} as GROUPNO,
+		#{drugListID} as DRUGLISTID
+		from dual )
+		t2
+		ON
+		(
+		t1.RECIPEID = t2.RECIPEID and t1.GROUPNO = t2.GROUPNO
+		and t1.DrugListID = t2.DrugListID 
+		 
+		)
+		WHEN
+		MATCHED THEN
+		UPDATE SET
+		<if test="drugFreq !=null">
+		t1.DRUGFREQ = #{drugFreq},
+		</if>
+		
+		<if test="drugCode !=null">
+		t1.DRUGCODE = #{drugCode},
+		</if>
+		
+		<if test="drugName !=null">
+		t1.DRUGNAME = #{drugName},
+		</if>
+		
+		<if test="quantity !=null">
+		t1.QUANTITY = #{quantity},
+		</if>
+		
+		<if test="quantityUnit !=null">
+		t1.QUANTITYUNIT = #{quantityUnit},
+		</if>
+		
+		<if test="occDT !=null">
+		t1.OCCDT = #{occDT},
+		</if>
+		
+		<if test="chargeDT !=null">
+		t1.CHARGEDT = #{chargeDT},
+		</if>
+		
+		<if test="infusionDate !=null">
+		t1.INFUSIONDATE = #{infusionDate},
+		</if>
+		
+		<if test="begindt !=null">
+		t1.BEGINDT = #{begindt},
+		</if>
+		
+		<if test="enddt !=null">
+		t1.ENDDT = #{enddt},
+		</if>
+		
+		<if test="state !=null">
+		t1.STATE = #{state},
+		</if>
+		
+		<if test="amount !=null">
+		t1.amount = #{amount},
+		</if>
+		
+		<if test="drugedDate !=null">
+		t1.drugeddate = #{drugedDate},
+		</if>
+		
+		<if test="bedNo !=null">
+		t1.bedNo = #{bedNo},
+		</if>
+		
+		<if test="patName !=null">
+		t1.patName = #{patName},
+		</if>
+		
+		t1.synDate = sysdate
+		where 
+		t1.drugListID = #{drugListID} 
+		and
+		t1.groupNo = #{groupNo}
+		and 
+		t1.recipeID = #{recipeID}
+		WHEN
+		NOT
+		MATCHED THEN
+		INSERT
+		(
+		<if test="recipeID !=null">
+		t1.RECIPEID,
+		</if>
+		
+		<if test="groupNo !=null">
+		t1.GROUPNO,
+		</if>
+		
+		<if test="drugListID !=null">
+		t1.DRUGLISTID,
+		</if>
+		
+		<if test="drugFreq !=null">
+		t1.DRUGFREQ,
+		</if>
+		
+		<if test="drugCode !=null">
+		t1.DRUGCODE,
+		</if>
+		
+		<if test="drugName !=null">
+		t1.DRUGNAME,
+		</if>
+		
+		<if test="quantity !=null">
+		t1.QUANTITY,
+		</if>
+		
+		<if test="quantityUnit !=null">
+		t1.QUANTITYUNIT,
+		</if>
+		
+		<if test="schedule !=null">
+		t1.SCHEDULE,
+		</if>
+		
+		<if test="occDT !=null">
+		t1.OCCDT,
+		</if>
+		
+		<if test="chargeDT !=null">
+		t1.CHARGEDT,
+		</if>
+		
+		<if test="infusionDate !=null">
+		t1.INFUSIONDATE,
+		</if>
+		
+		<if test="labelNo !=null">
+		t1.LABELNO,
+		</if>
+		
+		<if test="begindt !=null">
+		t1.BEGINDT,
+		</if>
+		
+		<if test="state !=null">
+		t1.STATE,
+		</if>
+		
+		<if test="amount !=null">
+		t1.amount,
+		</if>
+		
+		<if test="enddt !=null">
+		t1.ENDDT,
+		</if>
+		
+		<if test="drugedDate !=null">
+		t1.drugeddate,
+		</if>
+		
+		
+		<if test="bedNo !=null">
+		t1.bedNo ,
+		</if>
+		
+		<if test="patName !=null">
+		t1.patName,
+		</if>
+		
+		
+		t1.syndate
+		)
+		VALUES
+		(
+		
+		<if test="recipeID !=null">
+		#{recipeID},
+		</if>
+		
+		<if test="groupNo !=null">
+		#{groupNo},
+		</if>
+		
+		<if test="drugListID !=null">
+		#{drugListID},
+		</if>
+		
+		<if test="drugFreq !=null">
+		#{drugFreq},
+		</if>
+		
+		<if test="drugCode !=null">
+		#{drugCode},
+		</if>
+		
+		<if test="drugName !=null">
+		#{drugName},
+		</if>
+		
+		<if test="quantity !=null">
+		#{quantity},
+		</if>
+		
+		<if test="quantityUnit !=null">
+		#{quantityUnit},
+		</if>
+		
+		<if test="schedule !=null">
+		#{schedule},
+		</if>
+		
+		<if test="occDT !=null">
+		#{occDT},
+		</if>
+		
+		<if test="chargeDT !=null">
+		#{chargeDT},
+		</if>
+		
+		<if test="infusionDate !=null">
+		#{infusionDate},
+		</if>
+		
+		<if test="labelNo !=null">
+		#{labelNo},
+		</if>
+		
+		<if test="begindt !=null">
+		#{begindt},
+		</if>
+		
+		<if test="state !=null">
+		#{state},
+		</if>
+		
+		<if test="amount !=null">
+		#{amount},
+		</if>
+		
+		<if test="enddt !=null">
+		#{enddt},
+		</if>
+		
+		<if test="drugedDate !=null">
+		#{drugedDate},
+		</if>
+		
+		
+		<if test="bedNo !=null">
+		 #{bedNo},
+		</if>
+		
+		<if test="patName !=null">
+		#{patName},
+		</if>
+		
+		
+		sysdate
+		)
+	</update>
+	
+	<update id="synDataPivas" parameterType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean">
+
+		merge into
+		${pivasUser}.PIVAS_YDRECORD t1
+		using (
+		select
+		#{recipeID} as RECIPEID,
+		#{groupNo} as GROUPNO,
+		#{drugListID} as DRUGLISTID
+		from dual )
+		t2
+		ON
+		(
+		t1.RECIPEID = t2.RECIPEID
+		and
+		t1.GROUPNO = t2.GROUPNO
+		and 
+		t1.DrugListID = t2.DrugListID 
+		 
+		)
+		WHEN
+		MATCHED THEN
+		UPDATE SET
+		<if test="drugFreq !=null">
+		t1.DRUGFREQ = #{drugFreq},
+		</if>
+		
+		<if test="drugCode !=null">
+		t1.DRUGCODE = #{drugCode},
+		</if>
+		
+		<if test="drugName !=null">
+		t1.DRUGNAME = #{drugName},
+		</if>
+		
+		<if test="quantity !=null">
+		t1.QUANTITY = #{quantity},
+		</if>
+		
+		<if test="quantityUnit !=null">
+		t1.QUANTITYUNIT = #{quantityUnit},
+		</if>
+		
+		<if test="occDT !=null">
+		t1.OCCDT = #{occDT},
+		</if>
+		
+		<if test="chargeDT !=null">
+		t1.CHARGEDT = #{chargeDT},
+		</if>
+		
+		<if test="infusionDate !=null">
+		t1.INFUSIONDATE = #{infusionDate},
+		</if>
+		
+		<if test="begindt !=null">
+		t1.BEGINDT = #{begindt},
+		</if>
+		
+		<if test="enddt !=null">
+		t1.ENDDT = #{enddt},
+		</if>
+		
+		<if test="state !=null">
+		t1.STATE = #{state},
+		</if>
+		
+		<if test="amount !=null">
+		t1.amount = #{amount},
+		</if>
+		
+		<if test="batchID !=null">
+		t1.BATCH_ID = #{batchID},
+		</if>
+		
+		<if test="drugedDate !=null">
+		t1.drugeddate = #{drugedDate},
+		</if>
+		
+		
+		<if test="bedNo !=null">
+		t1.bedNo = #{bedNo},
+		</if>
+		
+		<if test="patName !=null">
+		t1.patName = #{patName},
+		</if>
+		
+		
+		t1.synDate = sysdate
+		where 
+		t1.drugListID = #{drugListID} 
+		and
+		t1.groupNo = #{groupNo}
+		and 
+		t1.recipeID = #{recipeID}
+		
+		WHEN
+		NOT
+		MATCHED THEN
+		INSERT
+		(
+		<if test="recipeID !=null">
+		t1.RECIPEID,
+		</if>
+		
+		<if test="groupNo !=null">
+		t1.GROUPNO,
+		</if>
+		
+		<if test="drugListID !=null">
+		t1.DRUGLISTID,
+		</if>
+		
+		<if test="drugFreq !=null">
+		t1.DRUGFREQ,
+		</if>
+		
+		<if test="drugCode !=null">
+		t1.DRUGCODE,
+		</if>
+		
+		<if test="drugName !=null">
+		t1.DRUGNAME,
+		</if>
+		
+		<if test="quantity !=null">
+		t1.QUANTITY,
+		</if>
+		
+		<if test="quantityUnit !=null">
+		t1.QUANTITYUNIT,
+		</if>
+		
+		<if test="schedule !=null">
+		t1.SCHEDULE,
+		</if>
+		
+		<if test="occDT !=null">
+		t1.OCCDT,
+		</if>
+		
+		<if test="chargeDT !=null">
+		t1.CHARGEDT,
+		</if>
+		
+		<if test="infusionDate !=null">
+		t1.INFUSIONDATE,
+		</if>
+		
+		<if test="labelNo !=null">
+		t1.LABELNO,
+		</if>
+		
+		<if test="begindt !=null">
+		t1.BEGINDT,
+		</if>
+		
+		<if test="state !=null">
+		t1.STATE,
+		</if>
+		
+		<if test="amount !=null">
+		t1.amount,
+		</if>
+		
+		<if test="enddt !=null">
+		t1.ENDDT,
+		</if>
+		
+		<if test="batchID !=null">
+		t1.BATCH_ID,
+		</if>
+		
+		<if test="drugedDate !=null">
+		t1.drugeddate,
+		</if>
+		
+		
+		<if test="bedNo !=null">
+		t1.bedNo,
+		</if>
+		
+		<if test="patName !=null">
+		t1.patName,
+		</if>
+		
+		
+		t1.syndate
+		)
+		VALUES
+		(
+		
+		<if test="recipeID !=null">
+		#{recipeID},
+		</if>
+		
+		<if test="groupNo !=null">
+		#{groupNo},
+		</if>
+		
+		<if test="drugListID !=null">
+		#{drugListID},
+		</if>
+		
+		<if test="drugFreq !=null">
+		#{drugFreq},
+		</if>
+		
+		<if test="drugCode !=null">
+		#{drugCode},
+		</if>
+		
+		<if test="drugName !=null">
+		#{drugName},
+		</if>
+		
+		<if test="quantity !=null">
+		#{quantity},
+		</if>
+		
+		<if test="quantityUnit !=null">
+		#{quantityUnit},
+		</if>
+		
+		<if test="schedule !=null">
+		#{schedule},
+		</if>
+		
+		<if test="occDT !=null">
+		#{occDT},
+		</if>
+		
+		<if test="chargeDT !=null">
+		#{chargeDT},
+		</if>
+		
+		<if test="infusionDate !=null">
+		#{infusionDate},
+		</if>
+		
+		<if test="labelNo !=null">
+		#{labelNo},
+		</if>
+		
+		<if test="begindt !=null">
+		#{begindt},
+		</if>
+		
+		<if test="state !=null">
+		#{state},
+		</if>
+		
+		<if test="amount !=null">
+		#{amount},
+		</if>
+		
+		<if test="enddt !=null">
+		#{enddt},
+		</if>
+		
+		<if test="batchID !=null">
+		#{batchID},
+		</if>
+		
+		<if test="drugedDate !=null">
+		#{drugedDate},
+		</if>
+		
+		
+		<if test="bedNo !=null">
+		#{bedNo},
+		</if>
+		
+		<if test="patName !=null">
+		#{patName},
+		</if>
+		
+		
+		sysdate
+		)
+	</update>
+
+	<select id="getBatchID" resultType="String">
+  	   select id_ from ${qry.pivasUser}.pivas_batch
+  	   where 1= 1
+  	   <if test="qry.yzlx == null">
+  	     <![CDATA[ and to_date(to_char(sysdate,'yyyy-MM-DD ') ||  #{qry.useTime} || ':00','yyyy-MM-DD hh24:mi:ss') >= to_date(to_char(sysdate,'yyyy-MM-DD ') || start_time_ || ':00','yyyy-MM-DD hh24:mi:ss')]]>
+        <![CDATA[  and to_date(to_char(sysdate,'yyyy-MM-DD ') ||  #{qry.useTime} || ':00','yyyy-MM-DD hh24:mi:ss') <= to_date(to_char(sysdate,'yyyy-MM-DD ') || end_time_ || ':00','yyyy-MM-DD hh24:mi:ss')]]>
+  	   	 and enabled_  = 1 and start_time_ is not null and end_time_ is not null
+  	   </if>
+  	   
+  	   <if test="qry.yzlx != null">
+  	    and  is0p  = 1 and IS_EMPTY_BATCH_ = 0
+  	   </if>
+  	  
+  	</select>
+
+	<select id="getSchedule"  resultType="String">
+  	   select schedule from ${qry.pivasUser}.pivas_ydrecord where druglistid =  #{qry.drugListID} and rownum = 1
+  	</select>
+  	
+  	<select id="getYdRecordCount" resultType="int">
+  	   select count(*) from (  select count(druglistid) from ${qry.pivasUser}.pivas_ydrecord where groupno =  #{qry.groupNo} and substr(OCCDT,0,10) = #{qry.useTime} group by druglistid)
+  	</select>
+  	
+  	<select id="getBathListOther" parameterType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean" resultType="String">
+  		select id_ from ${pivasUser}.pivas_batch
+  		<where>
+  		enabled_ = 1 and RESERVE1_ = '1' 
+  		and id_ not in (select batch_id from ${pivasUser}.pivas_ydrecord where groupno  = #{groupNo} and occdt like substr(#{occDT},1,10) || '%'  and <![CDATA[  DRUGLISTID <> #{drugListID} ]]>  group by groupno,occdt,batch_id)
+  		
+  		</where>
+  		 order by ORDER_NUM
+  	</select>
+  	
+  	<select id="checkBatchUsed" resultType="String"  parameterType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean">
+  		select batch_id from ${pivasUser}.pivas_ydrecord where groupno  = #{groupNo} and occdt like substr(#{occDT},1,10)  || '%' and batch_id = #{batchID} and <![CDATA[  DRUGLISTID <> #{drugListID} ]]> group by groupno,occdt,batch_id
+  	</select>
+  	
+  	<select id="qryYdStateList" resultType="com.zc.dem.syndata.excuteRecord.bean.ExcuteRecordBean">
+		SELECT RECIPEID, GROUPNO,DRUGLISTID, state FROM pivas_ydrecord where groupno = #{map.order_group_no,jdbcType=VARCHAR} 
+		<![CDATA[ and state <> 0 and OCCDT = #{map.occdt,jdbcType=VARCHAR}]]>
+	</select>
+</mapper>

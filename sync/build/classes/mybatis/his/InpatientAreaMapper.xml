@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.synhis.dao.InpatientAreaByHisDAO">
+	
+	<select id="qryInpatientAreaList" resultType="com.zc.dem.syndata.inpatientarea.bean.InpatientAreaBean">
+		SELECT ward_code  as deptCode, ward_name  as deptName, DEPT_CODE  as wardCode,  dept_name as wardName, input_Code as inputCode, memo as memo FROM v_pivas_ward_new
+	</select>
+	
+</mapper>						

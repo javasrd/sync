@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.dem.syndata.yz.dao.SynYzDAO">
+	<resultMap id="SynYzMap" type="com.zc.dem.syndata.yz.bean.SynYzBean">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="ORDERNO" property="orderNo" jdbcType="VARCHAR" />
+		<result column="ORDERGROUPNO" property="orderGroupNo" jdbcType="VARCHAR" />
+		<result column="ORDEROPENDEPTCODE" property="orderOpenDeptCode" jdbcType="VARCHAR" />
+		<result column="ORDEROPENDEPTNAME" property="orderOpenDeptName" jdbcType="VARCHAR" />
+		<result column="BEDNO" property="bedNo" jdbcType="VARCHAR" />
+		<result column="INHOSPNO" property="inhospNo" jdbcType="VARCHAR" />
+		<result column="INHOSPINDEXNO" property="inhospIndexNo" jdbcType="VARCHAR" />
+		<result column="ORDEROPENDRCODE" property="orderOpendrCode" jdbcType="VARCHAR" />
+		<result column="ORDEROPENDRNAME" property="orderOpendrName" jdbcType="VARCHAR" />
+		<result column="RECORDDRCODE" property="recordDrCode" jdbcType="VARCHAR" />
+		<result column="RECORDDRNAME" property="recordDrName" jdbcType="VARCHAR" />
+		<result column="ORDERFREQUENCYCODE" property="orderFrequencyCode" jdbcType="VARCHAR" />
+		<result column="DOSEWAYCODE" property="doseWayCode" jdbcType="VARCHAR" />
+		<result column="DRUGCODE" property="drugCode" jdbcType="VARCHAR" />
+		<result column="DRUGNAME" property="drugName" jdbcType="VARCHAR" />
+		<result column="SPECIFICATIONS" property="specifications" jdbcType="VARCHAR" />
+		<result column="DRUGUSEONEDOSAGE" property="drugUseOneDosAge" jdbcType="VARCHAR" />
+		<result column="DRUGUSEONEDOSAGEUNIT" property="drugUseOneDosAgeUnit" jdbcType="VARCHAR" />
+		<result column="DRUGAMOUNT" property="drugAmount" jdbcType="VARCHAR" />
+		<result column="ORDERORDERDATE" property="orderOrderDate" jdbcType="TIMESTAMP" />
+		<result column="ORDERSTOPDATE" property="orderStopDate" jdbcType="TIMESTAMP" />
+		<result column="NOTE" property="note" jdbcType="VARCHAR" />
+		<result column="SELFDRUGFLAG" property="selfDrugFlag" jdbcType="INTEGER" />
+		<result column="NUTRITIONLIQUIDFLAG" property="nutritionliquidFlag" jdbcType="INTEGER" />
+		<result column="ORDEREXECUTESTATUS" property="orderExecuteStatus" jdbcType="INTEGER" />
+		<result column="DRUGPLACECODE" property="drugPlaceCode" jdbcType="VARCHAR" />
+		<result column="ZXRQ" property="zxrq" jdbcType="TIMESTAMP" />
+		<result column="ZXSJ" property="zxsj" jdbcType="TIMESTAMP" />
+		<result column="action" property="action" jdbcType="INTEGER" />
+		<result column="YZLX" property="yzlx" jdbcType="INTEGER" />
+		<result column="MEDICAMENTS_PACKING_UNIT" property="medicamentsPackingUnit" jdbcType="VARCHAR" />
+		<result column="SYNDATA" property="synData" jdbcType="VARCHAR" />
+		<result column="PATNAME" property="patName" jdbcType="VARCHAR" />
+		<result column="SEX" property="sex" jdbcType="VARCHAR" />
+		<result column="BIRTH" property="birth" jdbcType="TIMESTAMP" />
+		<result column="AGE" property="age" jdbcType="VARCHAR" />
+		<result column="AGEUNIT" property="ageUnit" jdbcType="INTEGER" />
+		<result column="AVDP" property="avdp" jdbcType="VARCHAR" />
+		<result column="DROPSPEED" property="dropSpeed" jdbcType="VARCHAR" />
+		<result column="CONFIRM_DATE" property="confirmDate" jdbcType="VARCHAR" />
+		<result column="FIRSTUSECOUNT" property="firstUseCount" jdbcType="VARCHAR" />
+		<result column="CHECK_DATE" property="checkDate" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="getAllSql">
+		SELECT * FROM pivas_yz_syn
+	</sql>
+
+	<select id="queryAll" resultMap="SynYzMap">
+		<include refid="getAllSql" />
+	</select>
+
+	<select id="queryYZForHisDel" resultMap="SynYzMap">
+		SELECT * FROM pivas_yz
+		where ORDEREXECUTESTATUS = 0
+	</select>
+	
+	<select id="qryYzList" resultMap="SynYzMap">
+		SELECT * FROM pivas_yz
+		where 1=1
+		<if test="map != null">
+				<if test="map.order_group_no != null">
+					and ORDERGROUPNO = #{map.order_group_no,jdbcType=VARCHAR}
+				</if>
+		</if>
+	</select>
+
+	<delete id="deleteAll">
+		delete from pivas_yz_syn
+	</delete>
+
+	<update id="updateYzByCondition" parameterType="com.zc.dem.syndata.yz.bean.SynYzBean">
+		UPDATE pivas_yz SET
+		orderExecuteStatus = #{orderExecuteStatus},
+		action = 1
+		where orderNo = #{orderNo} and
+		orderGroupNo = #{orderGroupNo}
+	</update>
+
+	<update id="synData" parameterType="com.zc.dem.syndata.yz.bean.SynYzBean">
+
+		merge into
+		pivas_yz t1
+		using (
+		select
+		#{orderNo} as orderNo,
+		#{orderGroupNo} as orderGroupNo
+		from dual )
+		t2
+		ON
+		(
+		t1.orderNo = t2.orderNo and
+		t1.orderGroupNo = t2.orderGroupNo
+		)
+		WHEN
+		MATCHED THEN
+		UPDATE SET
+		t1.orderOpenDeptCode = #{orderOpenDeptCode},
+		t1.orderOpenDeptName = #{orderOpenDeptName},
+		t1.bedNo = #{bedNo},
+		t1.inhospNo = #{inhospNo},
+		t1.inhospIndexNo = #{inhospIndexNo},
+		t1.orderOpendrCode = #{orderOpendrCode},
+		t1.orderOpendrName =
+		#{orderOpendrName},
+		t1.recordDrCode = #{recordDrCode},
+		t1.recordDrName =
+		#{recordDrName},
+		t1.orderFrequencyCode = #{orderFrequencyCode},
+		t1.doseWayCode = #{doseWayCode},
+		t1.drugCode = #{drugCode},
+		t1.drugName
+		= #{drugName},
+		t1.specifications = #{specifications},
+		t1.drugUseOneDosAge = #{drugUseOneDosAge},
+		t1.drugUseOneDosAgeUnit =
+		#{drugUseOneDosAgeUnit},
+		t1.drugAmount = #{drugAmount},
+
+		<if test="orderStopDate !=null">
+			t1.orderStopDate = #{orderStopDate},
+		</if>
+		
+		<if test="orderOrderDate !=null">
+			t1.orderOrderDate = #{orderOrderDate},
+		</if>
+
+		<if test="confirmDate !=null">
+			t1.CONFIRM_DATE = #{confirmDate},
+		</if>
+		
+		<if test="checkDate !=null">
+			t1.CHECK_DATE = #{checkDate},
+		</if>
+		<if test="firstUseCount !=null">
+			FIRSTUSECOUNT = #{firstUseCount},
+		</if>
+
+		<if test="note !=null">
+			t1.note = #{note},
+		</if>
+		
+		<if test="selfDrugFlag !=null">
+		t1.selfDrugFlag = #{selfDrugFlag},
+		</if>
+		<if test="nutritionliquidFlag !=null">
+		t1.nutritionliquidFlag = #{nutritionliquidFlag},
+		</if>
+		t1.orderExecuteStatus
+		= #{orderExecuteStatus},
+		t1.drugPlaceCode = #{drugPlaceCode},
+		t1.yzlx =
+		#{yzlx},
+		t1.MEDICAMENTS_PACKING_UNIT = #{medicamentsPackingUnit},
+<if test="dropSpeed !=null">
+		t1.dropSpeed = #{dropSpeed},
+</if>
+<if test="avdp !=null">
+		t1.avdp = #{avdp},
+</if>
+		<if test="ageUnit !=null">
+		t1.ageUnit = #{ageUnit},
+		</if>
+		t1.age = #{age},
+		t1.birth = #{birth},
+		t1.sex = #{sex},
+		t1.patName =
+		#{patName},
+		t1.synData = to_char(sysdate,'yyyy-MM-dd HH24:mi:ss'),
+		t1.action = 1
+		where t1.orderNo =
+		#{orderNo} and
+		t1.orderGroupNo =
+		#{orderGroupNo} 
+
+		WHEN
+		NOT
+		MATCHED THEN
+		INSERT
+		(
+		t1.orderNo,
+		t1.orderGroupNo,
+		t1.orderOpenDeptCode,
+		t1.orderOpenDeptName,
+		t1.bedNo,
+		t1.inhospNo,
+		t1.inhospIndexNo,
+		t1.orderOpendrCode,
+		t1.orderOpendrName,
+		t1.recordDrCode,
+		t1.recordDrName,
+		t1.orderFrequencyCode,
+		t1.doseWayCode,
+		t1.drugCode,
+		t1.drugName,
+		t1.specifications,
+		t1.drugUseOneDosAge,
+		t1.drugUseOneDosAgeUnit,
+		t1.drugAmount,
+		t1.orderOrderDate,
+		<if test="orderStopDate !=null">
+			t1.orderStopDate,
+		</if>
+
+		<if test="confirmDate !=null">
+			t1.CONFIRM_DATE,
+		</if>
+		
+		<if test="checkDate !=null">
+			t1.CHECK_DATE,
+		</if>
+		<if test="note !=null">
+			t1.note,
+		</if>
+		<if test="selfDrugFlag !=null">
+			t1.selfDrugFlag,
+		</if>
+		<if test="nutritionliquidFlag !=null">
+			t1.nutritionliquidFlag,
+		</if>
+		t1.orderExecuteStatus,
+		t1.drugPlaceCode,
+		t1.yzlx,
+		t1.MEDICAMENTS_PACKING_UNIT,
+		<if test="dropSpeed !=null">
+			t1.dropSpeed,
+		</if>
+		<if test="avdp !=null">
+			t1.avdp,
+		</if>
+		<if test="ageUnit !=null">
+		t1.ageUnit,
+		</if>
+		t1.age,
+		t1.birth,
+		t1.sex,
+		t1.patName,
+		t1.synData,
+		<if test="firstUseCount !=null">
+		t1.FIRSTUSECOUNT,
+		</if>
+		t1.action
+		)
+		VALUES
+		(
+		#{orderNo},
+		#{orderGroupNo},
+		#{orderOpenDeptCode},
+		#{orderOpenDeptName},
+		#{bedNo},
+		#{inhospNo},
+		#{inhospIndexNo},
+		#{orderOpendrCode},
+		#{orderOpendrName},
+		#{recordDrCode},
+		#{recordDrName},
+		#{orderFrequencyCode},
+		#{doseWayCode},
+		#{drugCode},
+		#{drugName},
+		#{specifications},
+		#{drugUseOneDosAge},
+		#{drugUseOneDosAgeUnit},
+		#{drugAmount},
+		#{orderOrderDate},
+		<if test="orderStopDate !=null">
+			#{orderStopDate},
+		</if>
+
+		<if test="confirmDate !=null">
+			#{confirmDate},
+		</if>
+		
+		<if test="checkDate !=null">
+			#{checkDate},
+		</if>
+		
+		<if test="note !=null">
+			#{note},
+		</if>
+		<if test="selfDrugFlag !=null">
+		#{selfDrugFlag},
+		</if>
+		<if test="nutritionliquidFlag !=null">
+		#{nutritionliquidFlag},
+		</if>
+		#{orderExecuteStatus},
+		#{drugPlaceCode},
+		#{yzlx},
+		#{medicamentsPackingUnit},
+		<if test="dropSpeed !=null">
+			#{dropSpeed},
+		</if>
+		<if test="avdp !=null">
+			#{avdp},
+		</if>
+		<if test="ageUnit !=null">
+			#{ageUnit},
+		</if>
+		#{age},
+		#{birth},
+		#{sex},
+		#{patName},
+		to_char(sysdate,'yyyy-MM-dd HH24:mi:ss'),
+		<if test="firstUseCount !=null">
+		#{firstUseCount},
+		</if>
+		0
+		)
+	</update>
+
+
+	<update id="checkYzStatus">
+		begin
+		
+		update PIVAS_YZ set orderexecutestatus =1,syndata = to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss')
+		<![CDATA[ where yzlx = 1 and orderexecutestatus=0 and orderorderdate < ]]>
+		to_date(to_char(sysdate,'yyyy-MM-DD')||' 00:00:00','yyyy-MM-DD
+		hh24:mi:ss') ;
+		
+		update sync.pivas_yz
+		set syndata = to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss')
+		where id in (select t.id
+		from sync.pivas_yz t, pivas.pivas_yz m
+		where t.ordergroupno = m.parent_no
+		and t.orderno = m.act_order_no
+		and t.orderorderdate = m.start_time
+		<![CDATA[and m.yzzt <> t.orderexecutestatus)]]>;
+		
+		end;
+	</update>
+
+</mapper>

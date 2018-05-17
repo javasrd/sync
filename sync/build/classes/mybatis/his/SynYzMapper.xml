@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zc.synhis.dao.SynYzByHisDAO">
+	<resultMap id="SynYzMap" type="com.zc.dem.syndata.yz.bean.SynYzBean">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+		<result column="ORDER_GROUP_NO" property="orderGroupNo" jdbcType="VARCHAR" />
+		<result column="ORDER_OPEN_DEPT_CODE" property="orderOpenDeptCode" jdbcType="VARCHAR" />
+		<result column="ORDER_OPEN_DEPT_NAME" property="orderOpenDeptName" jdbcType="VARCHAR" />
+		<result column="BED_NO" property="bedNo" jdbcType="VARCHAR" />
+		<result column="INHOSP_NO" property="inhospNo" jdbcType="VARCHAR" />
+		<result column="INHOSP_INDEX_NO" property="inhospIndexNo" jdbcType="VARCHAR" />
+		<result column="PAT_NAME" property="patName" jdbcType="VARCHAR" />
+		<result column="PHYSIC_SEX_CODE" property="sex" jdbcType="VARCHAR" />
+		<result column="DATE_BIRTH" property="birth" jdbcType="TIMESTAMP" />
+		<result column="AGE" property="age" jdbcType="VARCHAR" />
+		<result column="AGE_UNIT" property="ageUnit" jdbcType="INTEGER" />
+		<result column="WEIGHT" property="avdp" jdbcType="VARCHAR" />
+		<result column="ORDER_OPEN_DR_COD" property="orderOpendrCode" jdbcType="VARCHAR" />
+		<result column="ORDER_OPEN_DR_NAME" property="orderOpendrName" jdbcType="VARCHAR" />
+		<result column="RECORD_DR_CODE" property="recordDrCode" jdbcType="VARCHAR" />
+		<result column="RECORD_DR_NAME" property="recordDrName" jdbcType="VARCHAR" />
+		<result column="ORDER_FREQUENCY_CODE" property="orderFrequencyCode" jdbcType="VARCHAR" />
+		<result column="DOSE_WAY_CODE" property="doseWayCode" jdbcType="VARCHAR" />
+		<result column="DRUG_CODE" property="drugCode" jdbcType="VARCHAR" />
+		<result column="DRUG_NAME" property="drugName" jdbcType="VARCHAR" />
+		<result column="SPECIFICATIONS" property="specifications" jdbcType="VARCHAR" />
+		<result column="DRUG_USE_ONE_DOSAGE" property="drugUseOneDosAge" jdbcType="VARCHAR" />
+		<result column="DRUG_USE_ONE_DOSAGE_UNIT" property="drugUseOneDosAgeUnit" jdbcType="VARCHAR" />
+		<result column="DRUG_AMOUNT" property="drugAmount" jdbcType="VARCHAR" />
+		<result column="ORDER_ORDER_DATE" property="orderOrderDate" jdbcType="TIMESTAMP" />
+		<result column="ORDER_STOP_DATE" property="orderStopDate" jdbcType="TIMESTAMP" />
+		<result column="NOTE" property="note" jdbcType="VARCHAR" />
+		<result column="SELF_DRUG_FLAG" property="selfDrugFlag" jdbcType="INTEGER" />
+		<result column="NUTRITION_LIQUID_FLAG" property="nutritionliquidFlag" jdbcType="INTEGER" />
+		<result column="ORDER_EXECUTE_STATUS" property="orderExecuteStatus" jdbcType="INTEGER" />
+		<result column="Drug_Place_Code" property="drugPlaceCode" jdbcType="VARCHAR" />
+		<result column="ORDER_CATEG_CODE" property="yzlx" jdbcType="INTEGER" />
+		<result column="MEDICAMENTS_PACKING_UNIT" property="medicamentsPackingUnit" jdbcType="VARCHAR" />
+		<result column="SYNDATA" property="synData" jdbcType="VARCHAR" />
+		<result column="DROP_SPEED" property="dropSpeed" jdbcType="VARCHAR" />
+		<result column="CONFIRM_DATE" property="confirmDate" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="qryYzList"  resultMap="SynYzMap">
+		SELECT ORDER_NO,
+       ORDER_GROUP_NO,
+       ORDER_OPEN_DEPT_CODE,
+       ORDER_OPEN_DEPT_NAME,
+       yz.BED_NO,
+       yz.INHOSP_NO,
+       yz.INHOSP_INDEX_NO,
+       yz.PAT_NAME,
+       yz.PHYSIC_SEX_CODE,
+       yz.DATE_BIRTH,
+       yz.AGE,
+       yz.AGE_UNIT,
+       yz.weight,
+       ORDER_OPEN_DR_COD,
+       ORDER_OPEN_DR_NAME,
+       RECORD_DR_CODE,
+       RECORD_DR_NAME,
+      replace(replace( replace(ORDER_FREQUENCY_CODE,')', ''),'(', ''),'.','')  as ORDER_FREQUENCY_CODE,
+       DOSE_WAY_CODE,
+       DRUG_CODE,
+       DRUG_NAME,
+       SPECIFICATIONS,
+       DRUG_USE_ONE_DOSAGE,
+       DRUG_USE_ONE_DOSAGE_UNIT,
+       DRUG_AMOUNT,
+       ORDER_ORDER_DATE,
+       
+       case when to_char(Order_Stop_Date, 'yyyy/MM/dd') = '0001/01/01' then null
+       else ORDER_STOP_DATE end as  ORDER_STOP_DATE,
+       NOTE,
+       SELF_DRUG_FLAG,
+       NUTRITION_LIQUID_FLAG,
+       <![CDATA[case 
+       when to_char(ORDER_ORDER_DATE, 'yyyy/MM/dd') = to_char(sysdate, 'yyyy/MM/dd') then '0'
+       when ORDER_EXECUTE_STATUS = 0 and to_char(ORDER_ORDER_DATE, 'yyyy/MM/dd') <> to_char(sysdate, 'yyyy/MM/dd') and to_char(Order_Stop_Date, 'yyyy/MM/dd') <> '0001/01/01' and order_stop_date < sysdate then '1'
+       when pat.instat <>  '0' then '1'
+         else ORDER_EXECUTE_STATUS end as ORDER_EXECUTE_STATUS]]>,
+       Drug_Place_Code,
+       ORDER_CATEG_CODE
+  FROM v_pivas_yz_new yz 
+  left join v_pivas_actpatient_new pat on yz.inhosp_no = pat.Inhosp_No
+		where 1=1
+			<if test="map == null">
+			and Dose_Way_Code IN ('02','03','130','124','125','139') 
+  			
+  			AND ORDER_CATEG_CODE in ('0','1') 
+  			AND Order_Execute_Status in ('0','1') 
+  			and DRUG_NAME not like '%胰岛素%'
+			<![CDATA[AND (to_char(Order_Stop_Date, 'yyyy/MM/dd') = '0001/01/01' OR Order_Stop_Date >= to_date(to_char(sysdate , 'yyyy-mm-dd') ,'yyyy-mm-dd')
+			or order_order_date >= to_date(to_char(sysdate , 'yyyy-mm-dd') ,'yyyy-mm-dd')) and order_order_date >= to_date('2017/01/01','yyyy/MM/dd')]]>
+			</if>
+			
+			<if test="map != null">
+				<if test="map.order_group_no != null">
+					and order_group_no = #{map.order_group_no,jdbcType=VARCHAR}
+				</if>
+			</if>
+	</select>
+
+</mapper>
